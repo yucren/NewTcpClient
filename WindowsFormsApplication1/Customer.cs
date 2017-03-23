@@ -12,9 +12,9 @@ using System.Net;
 
 namespace WindowsFormsApplication1
 {
-    public partial class Form1 : Form
+    public partial class Customer : Form
     {
-        public Form1()
+        public Customer()
         {
             InitializeComponent();
         }
