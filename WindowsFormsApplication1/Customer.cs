@@ -18,6 +18,7 @@ namespace WindowsFormsApplication1
     {
         byte[] buffe = new byte[8192];
         IPAddress ip = IPAddress.Parse("127.0.0.1");
+        NetworkStream tcpstream;
 
         NewTcpClient myclient = new NewTcpClient();
         public Customer()
@@ -35,13 +36,14 @@ namespace WindowsFormsApplication1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (myclient.Connected==false)
+            if (button1.Text !="关闭连接")
             {
                 try
                 {
 
                     myclient.ConnectedEvent += Myclient_ConnectedEvent;
                     myclient.Connect(ip, 9000);
+                    tcpstream = myclient.GetStream();
 
                 }
                 catch (Exception ex)
@@ -69,16 +71,16 @@ namespace WindowsFormsApplication1
             
             if (myclient.Connected)
             {
-                NetworkStream sendstream = myclient.GetStream();
-                if (sendstream.CanWrite)
+                
+                if (tcpstream.CanWrite)
                 {
 
                byte[] writeBytes =  Encoding.Unicode.GetBytes(textBox3.Text);
 
-                    sendstream.Write(writeBytes, 0, writeBytes.Length);
+                    tcpstream.Write(writeBytes, 0, writeBytes.Length);
                    
                 }
-                sendstream.Close();
+                
 
             }
 
@@ -91,18 +93,17 @@ namespace WindowsFormsApplication1
             if (myclient.Connected)
             {
                 MemoryStream mstream = new MemoryStream(1024);
-                NetworkStream receive = myclient.GetStream();
-                if (receive.CanRead)
+                
+                if (tcpstream.CanRead)
                 {
                     do
                     {
-                        int receivelength = receive.Read(buffe, 0, buffe.Length);
+                        int receivelength = tcpstream.Read(buffe, 0, buffe.Length);
                         mstream.Read(buffe, 0, receivelength);
-                    } while (receive.DataAvailable);
+                    } while (tcpstream.DataAvailable);
                string message = Encoding.Unicode.GetString(mstream.GetBuffer());
                     textBox2.Text += message;
-                    receive.Close();
-                    mstream.Close();
+                     mstream.Close();
 
                 }
                
@@ -111,16 +112,23 @@ namespace WindowsFormsApplication1
 
         private void button4_Click(object sender, EventArgs e)
         {
+            tcpstream.Close();
             myclient.Close();
             Application.Exit();
         }
 
         private void Customer_FormClosing(object sender, FormClosingEventArgs e)
         {
+            tcpstream.Close();
             myclient.Close();
         }
 
         private void Customer_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void button5_Click(object sender, EventArgs e)
         {
 
         }

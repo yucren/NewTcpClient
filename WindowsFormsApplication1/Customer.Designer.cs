@@ -35,11 +35,12 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button4 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Location = new System.Drawing.Point(25, 64);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(118, 54);
             this.button1.TabIndex = 0;
@@ -57,7 +58,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 80);
+            this.button2.Location = new System.Drawing.Point(25, 157);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(118, 54);
             this.button2.TabIndex = 2;
@@ -67,7 +68,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(12, 150);
+            this.button3.Location = new System.Drawing.Point(25, 250);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(118, 54);
             this.button3.TabIndex = 2;
@@ -77,15 +78,15 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(176, 63);
+            this.textBox2.Location = new System.Drawing.Point(189, 115);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(393, 329);
+            this.textBox2.Size = new System.Drawing.Size(393, 282);
             this.textBox2.TabIndex = 3;
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(12, 293);
+            this.button4.Location = new System.Drawing.Point(25, 343);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(118, 54);
             this.button4.TabIndex = 2;
@@ -95,17 +96,29 @@
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(176, 12);
+            this.textBox3.Location = new System.Drawing.Point(189, 64);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(393, 35);
             this.textBox3.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("宋体", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.Location = new System.Drawing.Point(171, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(216, 48);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "聊天系统";
             // 
             // Customer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(619, 472);
+            this.ControlBox = false;
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.button4);
@@ -113,6 +126,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Customer";
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Customer_FormClosing);
@@ -131,6 +145,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label label1;
     }
 }
 

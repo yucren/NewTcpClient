@@ -25,11 +25,8 @@ namespace Server
         {
             
             myServer.Start();
-            TcpClient newCustomer = myServer.AcceptTcpClient();
-
-            NetworkStream recevice = newCustomer.GetStream();
-            int length = recevice.Read(buffer, 0, buffer.Length);
-            textBox1.Text = Encoding.Unicode.GetString(buffer, 0, length);
+            WaitTalk();
+            
                   }
 
         private void Server_FormClosing(object sender, FormClosingEventArgs e)
@@ -37,5 +34,34 @@ namespace Server
             myServer.Stop();
             myServer = null;
         }
+        private async void WaitTalk()
+        {
+            await Talking();
+            MessageBox.Show("服务已关闭");
+        }
+
+        private  Task Talking()
+        {
+            Task talkTask = Task.Run(() =>
+            {
+                TcpClient newCustomer = myServer.AcceptTcpClient();
+                 NetworkStream recevice = newCustomer.GetStream();
+                do
+                {
+                    int length = recevice.Read(buffer, 0, buffer.Length);
+                    textBox1.Text += Encoding.Unicode.GetString(buffer, 0, length);
+                    if (length == 0)
+                    {
+                        textBox1.Text = "已关闭连接";
+                        
+                    }
+
+                } while (true);
+                
+               
+            });
+                       return talkTask;
+        }
+
     }
 }
