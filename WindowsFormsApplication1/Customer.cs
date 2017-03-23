@@ -9,21 +9,23 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Net;
+using System.IO;
+
 
 namespace WindowsFormsApplication1
 {
     public partial class Customer : Form
     {
+        byte[] buffe = new byte[8192];
+        IPAddress ip = IPAddress.Parse("192.168.0.188");
+
+        NewTcpClient myclient = new NewTcpClient();
         public Customer()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            
-            
-        }
+       
 
         private void Myclient_ConnectedEvent(object sender, ConnectedEventArgs e)
         {
@@ -33,25 +35,89 @@ namespace WindowsFormsApplication1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            IPAddress ip = IPAddress.Parse("192.168.0.188");
-
-            NewTcpClient myclient = new NewTcpClient();
-            try
+            if (myclient.Connected==false)
             {
-                
-                myclient.ConnectedEvent += Myclient_ConnectedEvent;
-                myclient.Connect(ip, 9000);
+                try
+                {
 
+                    myclient.ConnectedEvent += Myclient_ConnectedEvent;
+                    myclient.Connect(ip, 9000);
+
+                }
+                catch (Exception ex)
+                {
+                    textBox1.Text += ex.Message + "\n";
+                    myclient.Close();
+
+                    return;
+                }
+                textBox1.Text += "连接成功\n";
+                button1.Text = "关闭连接";
             }
-            catch (Exception ex)
+            else
             {
-                textBox1.Text += ex.Message + "\n";
                 myclient.Close();
-                myclient = null;
-                return;
             }
-            textBox1.Text += "连接成功\n";
+           
+           
+            
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            
+            if (myclient.Connected)
+            {
+                NetworkStream sendstream = myclient.GetStream();
+                if (sendstream.CanWrite)
+                {
+
+               byte[] writeBytes =  Encoding.Unicode.GetBytes(textBox3.Text);
+
+                    sendstream.Write(writeBytes, 0, writeBytes.Length);
+                   
+                }
+                sendstream.Close();
+
+            }
+
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            
+            if (myclient.Connected)
+            {
+                MemoryStream mstream = new MemoryStream(1024);
+                NetworkStream receive = myclient.GetStream();
+                if (receive.CanRead)
+                {
+                    do
+                    {
+                        int receivelength = receive.Read(buffe, 0, buffe.Length);
+                        mstream.Read(buffe, 0, receivelength);
+                    } while (receive.DataAvailable)
+               string message = Encoding.Unicode.GetString(mstream.GetBuffer());
+                    textBox2.Text += message;
+                    receive.Close();
+                    mstream.Close();
+
+                }
+               
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            myclient.Close();
+            Application.Exit();
+        }
+
+        private void Customer_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            myclient.Close();
         }
     }
     public class ConnectedEventArgs:EventArgs
