@@ -17,7 +17,7 @@ namespace WindowsFormsApplication1
     public partial class Customer : Form
     {
         byte[] buffe = new byte[8192];
-        IPAddress ip = IPAddress.Parse("192.168.0.188");
+        IPAddress ip = IPAddress.Parse("127.0.0.1");
 
         NewTcpClient myclient = new NewTcpClient();
         public Customer()
@@ -98,7 +98,7 @@ namespace WindowsFormsApplication1
                     {
                         int receivelength = receive.Read(buffe, 0, buffe.Length);
                         mstream.Read(buffe, 0, receivelength);
-                    } while (receive.DataAvailable)
+                    } while (receive.DataAvailable);
                string message = Encoding.Unicode.GetString(mstream.GetBuffer());
                     textBox2.Text += message;
                     receive.Close();
@@ -118,6 +118,11 @@ namespace WindowsFormsApplication1
         private void Customer_FormClosing(object sender, FormClosingEventArgs e)
         {
             myclient.Close();
+        }
+
+        private void Customer_Load(object sender, EventArgs e)
+        {
+
         }
     }
     public class ConnectedEventArgs:EventArgs
