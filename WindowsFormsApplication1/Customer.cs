@@ -20,6 +20,7 @@ namespace WindowsFormsApplication1
         IPAddress ip = IPAddress.Parse("127.0.0.1");
 
         NewTcpClient myclient = new NewTcpClient();
+        NetworkStream receive;
         public Customer()
         {
             InitializeComponent();
@@ -29,19 +30,21 @@ namespace WindowsFormsApplication1
 
         private void Myclient_ConnectedEvent(object sender, ConnectedEventArgs e)
         {
-            Console.WriteLine(e.LocalEndPoint);
-            Console.WriteLine(e.RemoteEndPoint);
+            textBox1.Text+= e.LocalEndPoint;
+            textBox1.Text += e.RemoteEndPoint;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (myclient.Connected==false)
+            if (button1.Text!="关闭连接")
             {
                 try
                 {
 
                     myclient.ConnectedEvent += Myclient_ConnectedEvent;
                     myclient.Connect(ip, 9000);
+                     receive = myclient.GetStream();
+                    getMessage();
 
                 }
                 catch (Exception ex)
@@ -66,47 +69,63 @@ namespace WindowsFormsApplication1
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
+              
             if (myclient.Connected)
             {
-                NetworkStream sendstream = myclient.GetStream();
-                if (sendstream.CanWrite)
+               
+                if (receive.CanWrite)
                 {
 
                byte[] writeBytes =  Encoding.Unicode.GetBytes(textBox3.Text);
 
-                    sendstream.Write(writeBytes, 0, writeBytes.Length);
+                    receive.Write(writeBytes, 0, writeBytes.Length);
                    
                 }
-                sendstream.Close();
+               
 
             }
 
 
         }
-
-        private void button3_Click(object sender, EventArgs e)
+        public async void getMessageAsync()
         {
-            
-            if (myclient.Connected)
+            await getMessage();
+        }
+       public Task getMessage()
+        {
+            Task getmessagetask = Task.Run(() =>
             {
-                MemoryStream mstream = new MemoryStream(1024);
-                NetworkStream receive = myclient.GetStream();
-                if (receive.CanRead)
+                if (myclient.Connected)
                 {
                     do
                     {
+                        MemoryStream mstream = new MemoryStream(1024);
+
+
                         int receivelength = receive.Read(buffe, 0, buffe.Length);
-                        mstream.Read(buffe, 0, receivelength);
-                    } while (receive.DataAvailable);
-               string message = Encoding.Unicode.GetString(mstream.GetBuffer());
-                    textBox2.Text += message;
-                    receive.Close();
-                    mstream.Close();
+                        mstream.Write(buffe, 0, receivelength);
+                        if (receivelength == 0)
+                        {
+                            return;
+                        }
+
+                        string message = Encoding.Unicode.GetString(mstream.GetBuffer());
+                        textBox2.Text += message;
+                        mstream.Close();
+
+                    } while (true);
+
+
 
                 }
-               
-            }
+            });
+            return getmessagetask;
+            
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            
+           
         }
 
         private void button4_Click(object sender, EventArgs e)
