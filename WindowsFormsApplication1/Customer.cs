@@ -18,9 +18,9 @@ namespace WindowsFormsApplication1
     {
         byte[] buffe = new byte[8192];
         IPAddress ip = IPAddress.Parse("127.0.0.1");
-        NetworkStream tcpstream;
 
         NewTcpClient myclient = new NewTcpClient();
+        NetworkStream receive;
         public Customer()
         {
             InitializeComponent();
@@ -30,20 +30,21 @@ namespace WindowsFormsApplication1
 
         private void Myclient_ConnectedEvent(object sender, ConnectedEventArgs e)
         {
-            Console.WriteLine(e.LocalEndPoint);
-            Console.WriteLine(e.RemoteEndPoint);
+            textBox1.Text+= e.LocalEndPoint;
+            textBox1.Text += e.RemoteEndPoint;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (button1.Text !="关闭连接")
+            if (button1.Text!="关闭连接")
             {
                 try
                 {
 
                     myclient.ConnectedEvent += Myclient_ConnectedEvent;
                     myclient.Connect(ip, 9000);
-                    tcpstream = myclient.GetStream();
+                     receive = myclient.GetStream();
+                    getMessage();
 
                 }
                 catch (Exception ex)
@@ -68,67 +69,77 @@ namespace WindowsFormsApplication1
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
+              
             if (myclient.Connected)
             {
-                
-                if (tcpstream.CanWrite)
+               
+                if (receive.CanWrite)
                 {
 
                byte[] writeBytes =  Encoding.Unicode.GetBytes(textBox3.Text);
 
-                    tcpstream.Write(writeBytes, 0, writeBytes.Length);
+                    receive.Write(writeBytes, 0, writeBytes.Length);
                    
                 }
-                
+               
 
             }
 
 
         }
-
-        private void button3_Click(object sender, EventArgs e)
+        public async void getMessageAsync()
         {
-            
-            if (myclient.Connected)
+            await getMessage();
+        }
+       public Task getMessage()
+        {
+            Task getmessagetask = Task.Run(() =>
             {
-                MemoryStream mstream = new MemoryStream(1024);
-                
-                if (tcpstream.CanRead)
+                if (myclient.Connected)
                 {
                     do
                     {
-                        int receivelength = tcpstream.Read(buffe, 0, buffe.Length);
-                        mstream.Read(buffe, 0, receivelength);
-                    } while (tcpstream.DataAvailable);
-               string message = Encoding.Unicode.GetString(mstream.GetBuffer());
-                    textBox2.Text += message;
-                     mstream.Close();
+                        MemoryStream mstream = new MemoryStream(1024);
+
+
+                        int receivelength = receive.Read(buffe, 0, buffe.Length);
+                        mstream.Write(buffe, 0, receivelength);
+                        if (receivelength == 0)
+                        {
+                            return;
+                        }
+
+                        string message = Encoding.Unicode.GetString(mstream.GetBuffer());
+                        textBox2.Text += message;
+                        mstream.Close();
+
+                    } while (true);
+
+
 
                 }
-               
-            }
+            });
+            return getmessagetask;
+            
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            
+           
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            tcpstream.Close();
             myclient.Close();
             Application.Exit();
         }
 
         private void Customer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            tcpstream.Close();
             myclient.Close();
         }
 
         private void Customer_Load(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void button5_Click(object sender, EventArgs e)
         {
 
         }
