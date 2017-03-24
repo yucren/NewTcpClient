@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("NewTcpClient")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("客户端")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("上海光线新材料科技有限公司")]
 [assembly: AssemblyProduct("NewTcpClient")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]

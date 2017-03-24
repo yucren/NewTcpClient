@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Net;
 using System.IO;
+using Server.Properties;
 
 namespace Server
 {
@@ -30,7 +31,10 @@ namespace Server
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            this.AutoSize = false;
+            
+            Color FbackColor = (Color)Settings.Default["BackColor"];
+            this.BackColor = FbackColor;
             AddTcpLister();
             //myServer.Start();
             //TcpClient newCustomer = myServer.AcceptTcpClient();
@@ -108,6 +112,35 @@ namespace Server
             //byte[] buffer = new byte[8192];
          byte[] WriteByte=   Encoding.Unicode.GetBytes(textBox3.Text);
             tcpNetWorkStreams[int.Parse(textBox2.Text)].Write(WriteByte, 0, WriteByte.Length);
+
+        }
+
+        private void 红色ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.BackColor = 红色ToolStripMenuItem.BackColor;
+            
+        }
+
+        private void 蓝色ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.BackColor = 蓝色ToolStripMenuItem.BackColor;
+        }
+
+        private void 绿色ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.BackColor = 绿色ToolStripMenuItem.BackColor;
+        }
+
+        private void Server_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Settings.Default.BackColor = this.BackColor;
+            Properties.Settings.Default.Save();
+
+
+        }
+
+        private void Server_ResizeBegin(object sender, EventArgs e)
+        {
 
         }
     }

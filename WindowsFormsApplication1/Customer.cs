@@ -17,7 +17,7 @@ namespace WindowsFormsApplication1
     public partial class Customer : Form
     {
         byte[] buffe = new byte[8192];
-        IPAddress ip = IPAddress.Parse("127.0.0.1");
+        IPAddress ip = IPAddress.Parse("192.168.0.188");
 
         NewTcpClient myclient = new NewTcpClient();
         NetworkStream receive;
