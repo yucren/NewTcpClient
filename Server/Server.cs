@@ -141,7 +141,7 @@ namespace Server
 
         private void Server_ResizeBegin(object sender, EventArgs e)
         {
-
+             MessageBox.Show("what is  your name");
         }
     }
 }
